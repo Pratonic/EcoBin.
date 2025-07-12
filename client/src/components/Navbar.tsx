@@ -10,7 +10,7 @@ import { Menu, Moon, Sun, Leaf } from "lucide-react";
 export function Navbar() {
   const [location] = useLocation();
   const { theme, toggleTheme } = useTheme();
-  const { user, isAuthenticated } = useAuth();
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
 
   const navItems = [
@@ -36,7 +36,7 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {isAuthenticated ? (
+            {user ? (
               navItems.map((item) => (
                 <Link
                   key={item.href}
@@ -87,32 +87,38 @@ export function Navbar() {
             <LanguageSelector />
 
             {/* Auth Button */}
-            {isAuthenticated ? (
+            {user ? (
               <div className="flex items-center space-x-2">
                 <div className="hidden sm:flex items-center space-x-2">
                   <span className="text-sm text-gray-600 dark:text-gray-300">
-                    {user?.firstName || user?.email}
+                    {user?.username || user?.email}
                   </span>
                   <div className="w-8 h-8 bg-eco-green rounded-full flex items-center justify-center text-white text-sm font-bold">
-                    {user?.firstName?.[0] || user?.email?.[0] || "U"}
+                    {user?.username?.[0] || user?.email?.[0] || "U"}
                   </div>
                 </div>
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => window.location.href = "/api/logout"}
+                  onClick={async () => {
+                    try {
+                      await fetch("/api/logout", { method: "POST" });
+                      window.location.href = "/";
+                    } catch (error) {
+                      console.error("Logout failed:", error);
+                    }
+                  }}
                   className="border-gray-300 dark:border-gray-600"
                 >
                   Logout
                 </Button>
               </div>
             ) : (
-              <Button
-                onClick={() => window.location.href = "/api/login"}
-                className="bg-eco-green hover:bg-eco-dark-green text-white"
-              >
-                Login
-              </Button>
+              <Link href="/auth">
+                <Button className="bg-eco-green hover:bg-eco-dark-green text-white">
+                  Login
+                </Button>
+              </Link>
             )}
 
             {/* Mobile Menu Button */}
@@ -128,7 +134,7 @@ export function Navbar() {
               </SheetTrigger>
               <SheetContent side="right" className="w-64">
                 <div className="flex flex-col space-y-4 mt-6">
-                  {isAuthenticated ? (
+                  {user ? (
                     navItems.map((item) => (
                       <Link
                         key={item.href}
@@ -157,6 +163,14 @@ export function Navbar() {
                       <a href="#about" className="text-gray-700 dark:text-gray-300 hover:text-eco-green transition-colors">
                         About
                       </a>
+                      <Link href="/auth">
+                        <Button
+                          onClick={() => setIsOpen(false)}
+                          className="bg-eco-green hover:bg-eco-dark-green text-white mt-4 w-full"
+                        >
+                          Login
+                        </Button>
+                      </Link>
                     </div>
                   )}
                 </div>
