@@ -2,13 +2,10 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useToast } from "@/hooks/use-toast";
-import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/useAuth";
 import { Redirect } from "wouter";
 
@@ -24,56 +21,13 @@ type AuthFormData = z.infer<typeof authSchema>;
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
-  const { toast } = useToast();
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, loginMutation, registerMutation } = useAuth();
 
   const form = useForm<AuthFormData>({
     resolver: zodResolver(authSchema),
     defaultValues: {
       username: "",
       password: "",
-    },
-  });
-
-  const loginMutation = useMutation({
-    mutationFn: async (data: AuthFormData) => {
-      const res = await apiRequest("POST", "/api/login", data);
-      return await res.json();
-    },
-    onSuccess: (userData) => {
-      queryClient.setQueryData(["/api/user"], userData);
-      toast({
-        title: "Success",
-        description: "Logged in successfully!",
-      });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Login failed",
-        description: error.message || "Invalid credentials",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const registerMutation = useMutation({
-    mutationFn: async (data: AuthFormData) => {
-      const res = await apiRequest("POST", "/api/register", data);
-      return await res.json();
-    },
-    onSuccess: (userData) => {
-      queryClient.setQueryData(["/api/user"], userData);
-      toast({
-        title: "Success",
-        description: "Account created successfully!",
-      });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Registration failed",
-        description: error.message || "Username already exists",
-        variant: "destructive",
-      });
     },
   });
 

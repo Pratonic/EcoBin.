@@ -17,20 +17,23 @@ import Community from "@/pages/Community";
 import Learn from "@/pages/Learn";
 import About from "@/pages/About";
 import AuthPage from "@/pages/auth-page";
+import { AuthProvider } from "@/hooks/useAuth";
 
 function Router() {
   const { user, isLoading } = useAuth();
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
+      </div>
+    );
+  }
+
   return (
     <Switch>
       <Route path="/auth" component={AuthPage} />
-      {isLoading ? (
-        <Route path="*">
-          <div className="flex items-center justify-center min-h-screen">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
-          </div>
-        </Route>
-      ) : user ? (
+      {user ? (
         <>
           <Route path="/" component={Dashboard} />
           <Route path="/schedule" component={Schedule} />
@@ -54,11 +57,13 @@ function App() {
       <ThemeProvider>
         <LanguageProvider>
           <TooltipProvider>
-            <div>
-              <Navbar />
-              <Toaster />
-              <Router />
-            </div>
+            <AuthProvider>
+              <div>
+                <Navbar />
+                <Toaster />
+                <Router />
+              </div>
+            </AuthProvider>
           </TooltipProvider>
         </LanguageProvider>
       </ThemeProvider>
