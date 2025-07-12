@@ -13,8 +13,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { Redirect } from "wouter";
 
 const authSchema = z.object({
-  username: z.string().length(8, "Username must be exactly 8 characters"),
-  password: z.string().length(8, "Password must be exactly 8 characters"),
+  username: z.string().min(8, "Username must be at least 8 characters").max(20, "Username must be at most 20 characters"),
+  password: z.string().min(8, "Password must be at least 8 characters").max(20, "Password must be at most 20 characters"),
 }).refine((data) => data.username === data.password, {
   message: "Username and password must be the same",
   path: ["password"],
@@ -109,8 +109,8 @@ export default function AuthPage() {
             </CardTitle>
             <CardDescription>
               {isLogin 
-                ? "Enter your 8-character username and password to access EcoBin"
-                : "Choose an 8-character username (same as password) to get started"
+                ? "Enter your username and password to access EcoBin"
+                : "Choose a username (8-20 characters, same as password) to get started"
               }
             </CardDescription>
           </CardHeader>
@@ -126,8 +126,8 @@ export default function AuthPage() {
                       <FormControl>
                         <Input 
                           {...field} 
-                          placeholder="8 characters"
-                          maxLength={8}
+                          placeholder="8-20 characters"
+                          maxLength={20}
                           className="font-mono"
                         />
                       </FormControl>
@@ -145,8 +145,8 @@ export default function AuthPage() {
                         <Input 
                           {...field} 
                           type="password"
-                          placeholder="8 characters (same as username)"
-                          maxLength={8}
+                          placeholder="8-20 characters (same as username)"
+                          maxLength={20}
                           className="font-mono"
                         />
                       </FormControl>

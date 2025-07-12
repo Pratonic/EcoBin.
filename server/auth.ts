@@ -10,13 +10,13 @@ const scryptAsync = promisify(scrypt);
 
 // Validation schemas
 const loginSchema = z.object({
-  username: z.string().length(8, "Username must be exactly 8 characters"),
-  password: z.string().length(8, "Password must be exactly 8 characters"),
+  username: z.string().min(8, "Username must be at least 8 characters").max(20, "Username must be at most 20 characters"),
+  password: z.string().min(8, "Password must be at least 8 characters").max(20, "Password must be at most 20 characters"),
 });
 
 const registerSchema = z.object({
-  username: z.string().length(8, "Username must be exactly 8 characters"),
-  password: z.string().length(8, "Password must be exactly 8 characters"),
+  username: z.string().min(8, "Username must be at least 8 characters").max(20, "Username must be at most 20 characters"),
+  password: z.string().min(8, "Password must be at least 8 characters").max(20, "Password must be at most 20 characters"),
 }).refine((data) => data.username === data.password, {
   message: "Username and password must be the same",
   path: ["password"],
