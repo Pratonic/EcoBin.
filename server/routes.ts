@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupAuth } from "./auth";
 import { analyzeWasteImage, generateQuiz, generateEducationalContent } from "./gemini";
 import { 
   insertWasteEntrySchema,
@@ -11,25 +11,13 @@ import {
 } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Auth middleware
-  await setupAuth(app);
-
-  // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json(user);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
-    }
-  });
+  // Auth middleware and routes
+  setupAuth(app);
 
   // Waste entry routes
-  app.post('/api/waste-entries', isAuthenticated, async (req: any, res) => {
+  app.post('/api/waste-entries', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.userId;
       const wasteData = insertWasteEntrySchema.parse({
         ...req.body,
         userId,
@@ -43,9 +31,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/waste-entries', isAuthenticated, async (req: any, res) => {
+  app.get('/api/waste-entries', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.userId;
       const entries = await storage.getUserWasteEntries(userId);
       res.json(entries);
     } catch (error) {
@@ -55,9 +43,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Pickup schedule routes
-  app.post('/api/pickup-schedules', isAuthenticated, async (req: any, res) => {
+  app.post('/api/pickup-schedules', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.userId;
       const scheduleData = {
         ...req.body,
         userId,
@@ -73,9 +61,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/pickup-schedules', isAuthenticated, async (req: any, res) => {
+  app.get('/api/pickup-schedules', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.userId;
       const schedules = await storage.getUserPickupSchedules(userId);
       res.json(schedules);
     } catch (error) {
@@ -84,7 +72,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch('/api/pickup-schedules/:id/status', isAuthenticated, async (req: any, res) => {
+  app.patch('/api/pickup-schedules/:id/status', async (req: any, res) => {
     try {
       const id = parseInt(req.params.id);
       const { status } = req.body;
@@ -98,9 +86,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Community report routes
-  app.post('/api/community-reports', isAuthenticated, async (req: any, res) => {
+  app.post('/api/community-reports', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.userId;
       const reportData = insertCommunityReportSchema.parse({
         ...req.body,
         userId,
@@ -126,9 +114,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Cleanup events routes
-  app.post('/api/cleanup-events', isAuthenticated, async (req: any, res) => {
+  app.post('/api/cleanup-events', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.userId;
       const eventData = insertCleanupEventSchema.parse({
         ...req.body,
         organizerId: userId,
@@ -152,9 +140,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/cleanup-events/:id/join', isAuthenticated, async (req: any, res) => {
+  app.post('/api/cleanup-events/:id/join', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.userId;
       const eventId = parseInt(req.params.id);
       
       await storage.joinCleanupEvent(eventId, userId);
@@ -176,9 +164,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/challenges/progress', isAuthenticated, async (req: any, res) => {
+  app.get('/api/challenges/progress', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.userId;
       const progress = await storage.getUserChallengeProgress(userId);
       res.json(progress);
     } catch (error) {
@@ -198,9 +186,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/rewards/:id/redeem', isAuthenticated, async (req: any, res) => {
+  app.post('/api/rewards/:id/redeem', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.userId;
       const rewardId = parseInt(req.params.id);
       
       const userReward = await storage.redeemReward(userId, rewardId);
@@ -211,9 +199,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/rewards/user', isAuthenticated, async (req: any, res) => {
+  app.get('/api/rewards/user', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.userId;
       const rewards = await storage.getUserRewards(userId);
       res.json(rewards);
     } catch (error) {
@@ -223,9 +211,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Analytics routes
-  app.get('/api/analytics', isAuthenticated, async (req: any, res) => {
+  app.get('/api/analytics', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.userId;
       const analytics = await storage.getUserAnalytics(userId);
       res.json(analytics);
     } catch (error) {
@@ -235,7 +223,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // AI Scanner endpoint with Gemini integration
-  app.post('/api/ai-scanner', isAuthenticated, async (req: any, res) => {
+  app.post('/api/ai-scanner', async (req: any, res) => {
     try {
       const { imageData } = req.body;
       
@@ -255,7 +243,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Quiz generation endpoint
-  app.post('/api/quiz/generate', isAuthenticated, async (req: any, res) => {
+  app.post('/api/quiz/generate', async (req: any, res) => {
     try {
       const { topic, difficulty = 'medium' } = req.body;
       
@@ -272,9 +260,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Learning progress endpoint
-  app.get('/api/user/learning-progress', isAuthenticated, async (req: any, res) => {
+  app.get('/api/user/learning-progress', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.userId;
       const progress = {
         articlesRead: 12,
         quizzesCompleted: 5,
@@ -292,7 +280,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Educational content generation endpoint
-  app.post('/api/content/generate', isAuthenticated, async (req: any, res) => {
+  app.post('/api/content/generate', async (req: any, res) => {
     try {
       const { topic } = req.body;
       

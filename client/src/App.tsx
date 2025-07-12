@@ -16,15 +16,21 @@ import Analytics from "@/pages/Analytics";
 import Community from "@/pages/Community";
 import Learn from "@/pages/Learn";
 import About from "@/pages/About";
+import AuthPage from "@/pages/auth-page";
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { user, isLoading } = useAuth();
 
   return (
     <Switch>
-      {isLoading || !isAuthenticated ? (
-        <Route path="/" component={Landing} />
-      ) : (
+      <Route path="/auth" component={AuthPage} />
+      {isLoading ? (
+        <Route path="*">
+          <div className="flex items-center justify-center min-h-screen">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
+          </div>
+        </Route>
+      ) : user ? (
         <>
           <Route path="/" component={Dashboard} />
           <Route path="/schedule" component={Schedule} />
@@ -34,6 +40,8 @@ function Router() {
           <Route path="/learn" component={Learn} />
           <Route path="/about" component={About} />
         </>
+      ) : (
+        <Route path="/" component={Landing} />
       )}
       <Route component={NotFound} />
     </Switch>
