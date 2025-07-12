@@ -1,0 +1,96 @@
+📱 Overview:
+EcoBin is an intuitive, AI-powered waste management app that empowers individuals, communities, and institutions to dispose of waste smartly, track eco-impact, and adopt greener habits. Whether you're a household, RWA, school, or municipality—EcoBin simplifies waste handling, promotes community action, and rewards you for sustainable choices.
+
+✨ Core Features:
+♻️ 1. Smart Waste Pickup Scheduling
+Schedule pickups by waste type (organic, plastic, e-waste, hazardous, bulk).
+
+Calendar-based scheduling with a pickup calendar and location picker.
+
+Auto-reminders and real-time GPS tracking of garbage trucks.
+
+🗃️ 2. Segregation Guidance
+Interactive step-by-step visual guide to sort wet, dry, and hazardous waste.
+
+Barcode & photo scanner for disposal instructions.
+
+💰 3. Recycling & Rewards
+Earn EcoPoints for segregation, recycling, and clean-up participation.
+
+Redeem points for eco-vouchers, discounts, or donation credits.
+
+📊 4. Waste Analytics Dashboard
+Visual insights on waste generated (weekly/monthly).
+
+Personalized suggestions to reduce and track eco-progress.
+
+🧑‍🤝‍🧑 5. Community Reporting & Awareness
+Report overflowing bins or illegal dumping with geotagged images.
+
+Upcoming clean-up drives calendar under Community tab.
+
+Leaderboards & badge system for contributors.
+
+🏢 6. Municipal Integration
+Real-time sync with local civic systems.
+
+Digital invoices, issue tracking, and sanitation worker feedback.
+
+🚀 Advanced Features:
+📸 7. AI Waste Scanner (Powered by Gemini AI API)
+Scan an item using your camera.
+
+Gemini AI analyzes material type and suggests:
+
+Proper disposal method.
+
+Nearest authorized disposal/recycling center.
+
+Environmental impact insights.
+
+🌱 8. Carbon Footprint Tracker
+Estimate your carbon impact based on disposal data.
+
+Track improvements and unlock “Green Tier” levels.
+
+🪱 9. Composting Assistant
+Guide to home composting setup and maintenance.
+
+Track compost bin health, moisture tips, and harvest reminders.
+
+🔄 10. Marketplace for Reuse
+Buy / sell / exchange reusable items (books, furniture, electronics).
+
+Supports local circular economy and donation efforts.
+
+🎙️ 11. Voice Assistant Integration
+Hands-free scheduling and help using Google Assistant or Siri.
+
+🏆 12. Eco Challenges & Activity Tab
+Participate in weekly tasks: “Recycle 5 items”, “No Plastic Day”.
+
+Activity tab includes competitions (poster-making, eco-hacks, trivia).
+
+Earn certificates, rewards, and community shout-outs.
+
+🎓 13. Learn Tab with Gemini AI-Powered Quiz
+Access educational videos, sustainability tips, and news articles.
+
+Quiz button generates custom MCQs using Gemini AI based on topics.
+
+Articles section links out to top environmental content and blogs.
+
+🌐 14. Offline & Low-Data Mode
+Download guides and schedule pickups offline.
+
+Syncs data once online to conserve mobile data.
+
+🗣️ 15. Multilingual Support
+Available in Hindi, Kannada, Marathi, Tamil, English, and more.
+
+🌗 16. Light & Dark Mode Toggle
+Seamless theme toggle for better user experience and accessibility.
+
+📄 About Page:
+The About section gives a full introduction to EcoBin’s mission—creating a cleaner, smarter, and greener planet. It introduces the creators, vision, tech stack (including Gemini AI), and ways users can contribute to the movement.
+
